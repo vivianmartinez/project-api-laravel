@@ -6,15 +6,20 @@ use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CustomerCollection;
+use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
+        $customers = Customer::all();
+        //if(array_key_exists('includeorders',$request->query())) $customers = $customers->with('orders');
+        return new CustomerCollection($customers);
     }
 
     /**

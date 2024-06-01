@@ -19,7 +19,16 @@ Run seeder
 
     php artisan db:seed
 
+Install Laravel Sanctum
 
+    php artisan install:api
+
+Create Collections
+
+    php artisan make:resource CustomerCollection
+    php artisan make:resource OrderCollection
+    php artisan make:resource ProductCollection
+    php artisan make:resource CategoryCollection
 
 ## About Laravel
 

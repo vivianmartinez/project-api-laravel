@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryCollection;
 
 class CategoryController extends Controller
 {
@@ -15,6 +16,10 @@ class CategoryController extends Controller
     public function index()
     {
         //
+        $query = Category::query();
+        $categories = Category::all();
+        $categories = $query->with('products')->get();
+        return new CategoryCollection($categories);
     }
 
     /**
