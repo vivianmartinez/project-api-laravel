@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Http\Requests\StoreCustomerRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Controllers\Controller;
+use App\Filters\CustomerFilter;
 use App\Http\Resources\CustomerCollection;
 use Illuminate\Http\Request;
 
@@ -17,6 +18,8 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         //
+        $customerFilter = new CustomerFilter();
+        $filterQuery = $customerFilter->generateEloquentQuery($request);
         $customers = Customer::all();
         //if(array_key_exists('includeorders',$request->query())) $customers = $customers->with('orders');
         return new CustomerCollection($customers);
