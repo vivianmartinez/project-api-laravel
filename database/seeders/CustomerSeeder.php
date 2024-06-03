@@ -14,6 +14,6 @@ class CustomerSeeder extends Seeder
     public function run(): void
     {
         //
-        Customer::factory(10)->create();
+        Customer::factory(40)->create();
     }
 }

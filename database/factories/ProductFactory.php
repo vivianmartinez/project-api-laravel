@@ -20,9 +20,9 @@ class ProductFactory extends Factory
         return [
             //
             'category_id' => Category::all()->random()->id,
-            'name' => $this->faker->word(10),
+            'name'        => $this->faker->word(10),
             'description' => $this->faker->realText(255),
-            'price' => $this->faker->randomFloat(2,1,15),
+            'price'       => $this->faker->randomFloat(2,1,15),
         ];
     }
 }

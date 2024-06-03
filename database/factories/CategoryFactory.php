@@ -18,7 +18,7 @@ class CategoryFactory extends Factory
     {
         return [
             //
-            'name' => $this->faker->unique()->word(10),
+            'name'        => $this->faker->unique()->word(10),
             'description' => $this->faker->realText(150)
         ];
     }

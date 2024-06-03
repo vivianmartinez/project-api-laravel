@@ -23,11 +23,7 @@ class CategoryController extends Controller
             $categoryFilter = new CategoryFilter();
             $queryItems = $categoryFilter->generateEloquentQuery($request);
             if(array_key_exists('error',$queryItems)){
-                return response()->json([
-                    'error'     => true,
-                    'message'   => $queryItems['error'],
-                    'date'      => []
-                ],400);
+                return response()->json(['error'=> true, 'message'=> $queryItems['error'],'data' => []],400);
             }
             $categories = Category::where($queryItems);
             //add products by category

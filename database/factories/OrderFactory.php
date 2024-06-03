@@ -23,7 +23,7 @@ class OrderFactory extends Factory
         $date = $this->faker->dateTimeThisMonth();
         return [
             //
-            'customer_id' => Customer::all()->random()->id,
+            'customer_id'=> Customer::all()->random()->id,
             'order_date' => $this->faker->dateTimeThisYear(),
             'updated_at' => $date,
             'created_at' => $date
@@ -33,7 +33,7 @@ class OrderFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function(Order $order){
-            $order->orderDetails()->saveMany(OrderDetail::factory(3)->make());
+            $order->orderDetails()->saveMany(OrderDetail::factory(rand(1,5))->make());
         });
     }
 }

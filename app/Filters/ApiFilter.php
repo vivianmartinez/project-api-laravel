@@ -62,4 +62,8 @@ class ApiFilter{
        return $query;
     }
 
+    public function generateItemsJoin(){
+
+    }
+
 }

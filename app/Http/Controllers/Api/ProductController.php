@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\ProductFilter;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductCollection;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -15,9 +17,20 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        //
-        $products = Product::all();
-        return $products;
+        //All products
+        $products = Product::paginate();
+        if($request->query()){
+            $productFilter = new ProductFilter();
+            $queryItems = $productFilter->generateEloquentQuery($request);
+            if(array_key_exists('error',$queryItems)){
+                return response()->json(['error'=> true, 'message'=> $queryItems['error'],'data' => []],400);
+            }
+            $products = Product::where($queryItems);
+            //products with category
+            if(array_key_exists('includecategory',$request->query())) $products = $products->with('category');
+            $products = $products->paginate()->appends($request->query());
+        }
+        return new ProductCollection($products);
     }
 
     /**

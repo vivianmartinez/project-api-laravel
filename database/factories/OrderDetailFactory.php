@@ -20,9 +20,9 @@ class OrderDetailFactory extends Factory
     {
         return [
             //
-            'order_id' => Order::all()->random()->id,
+            'order_id'   => Order::all()->random()->id,
             'product_id' => Product::all()->random()->id,
-            'quantity' => $this->faker->numberBetween(1,5)
+            'quantity'   => $this->faker->numberBetween(1,5)
         ];
     }
 }

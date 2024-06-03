@@ -24,19 +24,13 @@ class CustomerController extends Controller
             $customerFilter = new CustomerFilter();
             $queryItems = $customerFilter->generateEloquentQuery($request);
             if(array_key_exists('error',$queryItems)){
-                return response()->json([
-                    'error'     => true,
-                    'message'   => $queryItems['error'],
-                    'date'      => []
-                ],400);
+                return response()->json(['error'=> true, 'message'=> $queryItems['error'],'data' => []],400);
             }
-
             $customers = Customer::where($queryItems);
              //add orders by customer
             if(array_key_exists('includeorders',$request->query())) $customers = $customers->with('orders');
 
             $customers = $customers->paginate()->appends($request->query());
-
         }
         return new CustomerCollection($customers);
     }
