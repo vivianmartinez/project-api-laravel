@@ -11,17 +11,15 @@ class ApiFilter{
     public function __construct()
     {
         $this->operators = [
-            'string'  =>[
-                'equal'         => '=',
-                'contain'       => 'LIKE'],
-            'number' =>[
-                'equal'         => '=',
+            'all'       =>  ['equal'    => '='],
+            'string'    =>  ['contain'  => 'LIKE'],
+            'number'    =>  [
                 'less'          => '<',
                 'greater'       => '>',
                 'less_equal'    => '<=',
                 'greater_equal' => '>=',
                 'not_equal'     => '!='
-                ]
+            ]
         ];
     }
 
@@ -30,31 +28,38 @@ class ApiFilter{
         $requestQuery = $request->query();
 
         foreach($requestQuery as $column => $content){
+            //get the operator
+            if( ! is_array($content)){
+                continue;
+            }
             $key = array_key_first($content);
             $value = $content[$key];
             //verify column exists
             if(! in_array($column,$this->columns['string']) && !in_array($column,$this->columns['number'])){
                 $column = null;
             }
-            //verify operator
-            $operator = array_key_exists($key,$this->operators['string']) ? ['string' => $this->operators['string'][$key]] : [];
-            $operator = array_key_exists($key,$this->operators['number']) ? ['number' => $this->operators['number'][$key]] : [];
+            //verify operator exists
+            $operator = array_key_exists($key,$this->operators['all']) ? ['all' => $this->operators['all'][$key]] : [];
+            $operator = array_key_exists($key,$this->operators['string']) ? ['string' => $this->operators['string'][$key]] : $operator;
+            $operator = array_key_exists($key,$this->operators['number']) ? ['number' => $this->operators['number'][$key]] : $operator;
 
-            if(! empty($operator) && $column !== null){
-                if(in_array($column,$this->columns['string']) && isset($operator['string'])){
-                    $value = $key == 'equal' ? $content[$key] : '%'.$content[$key].'%';
-                    $query[] = [$column,$operator['string'],$value];
-                }elseif(in_array($column,$this->columns['number']) && isset($operator['number']) ){
-                    $query[] = [$column,$operator['number'],$value];
-                }else{
-                    $query = ['error','Invalid params.'];
+            if(!empty($operator) && $column !== null){
+                //validate operator for strings with column string and operator for numbers
+                $op = null;
+                if(in_array($column,$this->columns['string']) && (isset($operator['string']) || isset($operator['all']))){
+                    $op = $operator['string'] ?? $operator['all'];
+                    $value = $op !== 'LIKE' ? $content[$key] : '%'.$content[$key].'%';
+                }elseif(in_array($column,$this->columns['number']) && (isset($operator['number']) || isset($operator['all']))){
+                    $op = $operator['number'] ?? $operator['all'];
                 }
+                if($op !== null) $query[] = [$column,$op,$value];
+                else $query = ['error' => 'Invalid request.'];
             }else{
-                $query = ['error','Invalid params.'];
+                $query = ['error' => 'Invalid request.'];
             }
         }
-        print_r($query);
-        exit();
+
+       return $query;
     }
 
 }

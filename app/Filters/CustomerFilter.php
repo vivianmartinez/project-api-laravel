@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Filters;
+namespace App\Filters;
 
 
 class CustomerFilter extends ApiFilter{

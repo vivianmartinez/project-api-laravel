@@ -9,5 +9,4 @@ class ProductFilter extends ApiFilter{
         'string' => ['name','description'],
         'number' => ['category_id','price']
     ];
-
 }

@@ -17,11 +17,27 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        //
-        $customerFilter = new CustomerFilter();
-        $filterQuery = $customerFilter->generateEloquentQuery($request);
-        $customers = Customer::all();
-        //if(array_key_exists('includeorders',$request->query())) $customers = $customers->with('orders');
+
+        $customers = Customer::paginate();
+
+        if($request->query()){
+            $customerFilter = new CustomerFilter();
+            $filterQuery = $customerFilter->generateEloquentQuery($request);
+            if(array_key_exists('error',$filterQuery)){
+                return response()->json([
+                    'error'     => true,
+                    'message'   => $filterQuery['error'],
+                    'date'      => []
+                ],400);
+            }
+
+            $customers = Customer::where($filterQuery);
+             //add orders by customer
+            if(array_key_exists('includeorders',$request->query())) $customers = $customers->with('orders');
+
+            $customers = $customers->paginate()->appends($request->query());
+
+        }
         return new CustomerCollection($customers);
     }
 
@@ -40,6 +56,7 @@ class CustomerController extends Controller
     {
         //
     }
+
 
     /**
      * Display the specified resource.
