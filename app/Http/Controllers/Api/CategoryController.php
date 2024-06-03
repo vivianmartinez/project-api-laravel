@@ -2,23 +2,38 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\CategoryFilter;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryCollection;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $query = Category::query();
-        $categories = Category::all();
-        $categories = $query->with('products')->get();
+        //All categories
+        $categories = Category::paginate();
+        if($request->query()){
+            $categoryFilter = new CategoryFilter();
+            $queryItems = $categoryFilter->generateEloquentQuery($request);
+            if(array_key_exists('error',$queryItems)){
+                return response()->json([
+                    'error'     => true,
+                    'message'   => $queryItems['error'],
+                    'date'      => []
+                ],400);
+            }
+            $categories = Category::where($queryItems);
+            //add products by category
+            if(array_key_exists('includeproducts',$request->query())) $categories = $categories->with('products');
+            $categories = $categories->paginate()->appends($request->query());
+        }
         return new CategoryCollection($categories);
     }
 

@@ -17,21 +17,21 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-
+        //all customers
         $customers = Customer::paginate();
-
+        // if params query
         if($request->query()){
             $customerFilter = new CustomerFilter();
-            $filterQuery = $customerFilter->generateEloquentQuery($request);
-            if(array_key_exists('error',$filterQuery)){
+            $queryItems = $customerFilter->generateEloquentQuery($request);
+            if(array_key_exists('error',$queryItems)){
                 return response()->json([
                     'error'     => true,
-                    'message'   => $filterQuery['error'],
+                    'message'   => $queryItems['error'],
                     'date'      => []
                 ],400);
             }
 
-            $customers = Customer::where($filterQuery);
+            $customers = Customer::where($queryItems);
              //add orders by customer
             if(array_key_exists('includeorders',$request->query())) $customers = $customers->with('orders');
 
