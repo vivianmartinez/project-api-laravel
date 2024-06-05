@@ -55,7 +55,10 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+        //show products by category
+        if(array_key_exists('includeproducts',request()->query()))
+            return new CategoryResource($category->loadMissing('products'));
+
         return new CategoryResource($category);
     }
 
