@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Filters\OrderFilter;
 use App\Models\Order;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderCollection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -17,8 +19,9 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         //
-        $orders = Order::paginate();
-        return new OrderCollection($orders);
+        $filterQuery = new OrderFilter();
+        $orders_full = $filterQuery->queryFullDataOrder();
+        return new OrderCollection($orders_full);
     }
 
     /**

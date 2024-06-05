@@ -3,6 +3,7 @@
 namespace App\Filters;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ApiFilter{
     protected $columns;
@@ -62,7 +63,30 @@ class ApiFilter{
        return $query;
     }
 
-    public function generateItemsJoin(){
+    /**
+     * Query Join two tables
+     */
+    public function generateItemsJoin($table,$join,$select,$groupBy = null){
+
+        /**
+         * SELECT orders.*,SUM(od.quantity * p.price) as monto FROM order_details od INNER JOIN orders  ON od.order_id = orders.id INNER JOIN products p ON p.id = od.product_id GROUP BY od.order_id;
+         */
+
+        $query = DB::table($table);
+
+        foreach($join as $joinTable => $column){
+            $query = $query->join($joinTable,$joinTable.'.id', '=',$column);
+        }
+
+        $query = $query->select($select);
+
+        //->select('users.*', 'contacts.phone', 'orders.price');
+        if($groupBy !== null){
+            $query = $query->groupBy($groupBy);
+        }
+        $query = $query->get();
+
+        return $query;
 
     }
 
