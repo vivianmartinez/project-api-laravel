@@ -7,7 +7,9 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Project API Rest Laravel 11.9.2
+## Project API REST Laravel 11.9.2
+
+Run this API to get all your Ecommerce data, customers, products, categories and orders.
 
 ## Steps
 
@@ -29,6 +31,13 @@ Create Collections
     php artisan make:resource OrderCollection
     php artisan make:resource ProductCollection
     php artisan make:resource CategoryCollection
+
+Create Resources
+    
+    php artisan make:resource CustomerResource
+    php artisan make:resource OrderResource
+    php artisan make:resource ProductResource
+    php artisan make:resource CategoryResource
 
 ## About Laravel
 
