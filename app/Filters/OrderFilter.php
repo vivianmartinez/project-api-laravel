@@ -13,8 +13,6 @@ class OrderFilter extends ApiFilter{
 
     public function queryFullDataOrder(){
 
-       // DB::statement("SET SQL_MODE=''"); //add this line or change in config/database.php mysql strict to false
-
         $orders = Order::with(['customer'=> function($cust){
                             $cust->select('id','name','email');
                     }])->with(['orderDetails' => function($query) {
